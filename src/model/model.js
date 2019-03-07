@@ -44,7 +44,7 @@ export const LIST = [
         url: 'https://github.com/reactjs/redux',
         author: 'Dan Abramov, Andrew Clark',
         num_comments: 2,
-        points: 5,
+        points: 56,
         objectID: 5,
     }
 ]
