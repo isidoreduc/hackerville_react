@@ -1,38 +1,35 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { LIST } from './model/model.js';
 
-
-const list = [
-  {
-    title: 'React',
-    url: 'https://facebook.github.io/react/',
-    author: 'Jordan Walke',
-    num_comments: 3,
-    points: 4,
-    objectID: 0
-  },
-  {
-    title: 'Redux',
-    url: 'https://github.com/reactjs/redux',
-    author: 'Dan Abramov, Andrew Clark',
-    num_comments: 2,
-    points: 5,
-    objectID: 1,
-  }
-]
 
 class App extends Component {
+
+  constructor(props){
+    super(props);
+    this.state = {
+      list: LIST
+    }
+    this.dismissItem = this.dismissItem.bind(this);
+  }
+
+  dismissItem = (id) => {
+    const updatedList = this.state.list.filter(item => item.objectID !== id);
+    this.setState({list: updatedList});
+  }
+
   render() {
     return (
-      <div>
-        {list.map(item => 
-          <div key={item.objectID}>
+      <div className='container'>
+        {this.state.list.map(item => 
+          <div className='col text-center' key={item.objectID}>
             <a href={item.url}>{item.title}</a>
             <div>Author: {item.author}</div>
             <div>Points: {item.points}</div>
             <div>No. of comm: {item.num_comments}</div>
-            <hr/>
+            <div><button onClick={() => this.dismissItem(item.objectID)} type='button'>
+              Dismiss</button></div>
+            <hr className='col-4'/>
           </div>
           
         )}
