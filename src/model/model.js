@@ -40,7 +40,7 @@ export const LIST = [
         objectID: 4
     },
     {
-        title: 'Ember',
+        title: 'Emberjs',
         url: 'https://github.com/reactjs/redux',
         author: 'Dan Abramov, Andrew Clark',
         num_comments: 2,
