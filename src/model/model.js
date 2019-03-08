@@ -32,7 +32,7 @@ export const LIST = [
         objectID: 3,
     },
     {
-        title: 'Backbone',
+        title: 'Backbonejs',
         url: 'https://facebook.github.io/react/',
         author: 'Jordan Walke',
         num_comments: 3,
