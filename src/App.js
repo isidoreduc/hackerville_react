@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import './App.css';
+import { List } from './components/ListComponent.js';
+import { Search } from './components/SearchComponent.js';
 import { LIST } from './model/model.js';
 
-const isSearched = searchTerm => item => item.title.toLowerCase().includes(searchTerm.toLowerCase());
+
 
 class App extends Component {
 
@@ -25,26 +27,17 @@ class App extends Component {
 
 
   render() {
+    const{searchTerm, list} = this.state;
+
     return (
       <div className='container'>
-        <form>
-          <div className='text-center'>
-            <input type='text' placeholder='search...' onChange={this.onSearchChange}></input>
-          </div>
-          <br />
-        </form>
-        {this.state.list.filter(isSearched(this.state.searchTerm)).map(item =>
-          <div className='col text-center' key={item.objectID}>
-            <a href={item.url}>{item.title}</a>
-            <div>Author: {item.author}</div>
-            <div>Points: {item.points}</div>
-            <div>No. of comm: {item.num_comments}</div>
-            <div><button onClick={() => this.dismissItem(item.objectID)} type='button'>
-              Dismiss</button></div>
-            <hr className='col-4' />
-          </div>
-
-        )}
+        <Search value = {searchTerm}
+                onChange = {this.onSearchChange}
+                > Search for a title: </Search>
+        <List list = {list} 
+              pattern = {searchTerm}
+              dismissItem = {this.dismissItem}
+              />
 
       </div>
 
