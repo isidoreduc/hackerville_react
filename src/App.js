@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import './App.css';
-import { List } from './components/ListComponent.js';
-import { Search } from './components/SearchComponent.js';
+import List from './components/ListComponent.js';
+import Search from './components/SearchComponent.js';
 import { LIST } from './model/model.js';
-
+// in {} when it's a named export in a class component; without braces when it's in a function component - implicit export
 
 
 class App extends Component {
@@ -27,17 +27,20 @@ class App extends Component {
 
 
   render() {
-    const{searchTerm, list} = this.state;
+    const { searchTerm, list } = this.state;
 
     return (
       <div className='container'>
-        <Search value = {searchTerm}
-                onChange = {this.onSearchChange}
-                > Search for a title: </Search>
-        <List list = {list} 
-              pattern = {searchTerm}
-              dismissItem = {this.dismissItem}
-              />
+        <br />
+        <div className='row'>
+          <Search value={searchTerm}
+            onChange={this.onSearchChange}
+          >  </Search>
+        </div>
+        <List list={list}
+          pattern={searchTerm}
+          dismissItem={this.dismissItem}
+        />
 
       </div>
 
