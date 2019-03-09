@@ -2,12 +2,16 @@ import React, { Component } from 'react';
 import './App.css';
 import List from './components/ListComponent.js';
 import Search from './components/SearchComponent.js';
+import Button from './components/ButtonComponent.js';
 // in {} when it's a named export in a class component; without braces when it's in a function component - implicit export
 
-const DEFAULT_QUERY = 'ragalie';
+const DEFAULT_QUERY = '';
+const DEFAULT_HPP = '50';
 const PATH_BASE = 'https://hn.algolia.com/api/v1';
 const PATH_SEARCH = '/search';
 const PARAM_SEARCH = 'query=';
+const PARAM_PAGE = 'page=';
+const PARAM_HPP = 'hitsPerPage=';
 
 //const url = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${DEFAULT_QUERY}`;
 
@@ -26,10 +30,22 @@ class App extends Component {
   }
 
 
-  setSearchTopStories = (result) => this.setState({ result });
+  setSearchTopStories(result) {
+    const { hits, page } = result;
+    const oldHits = page !== 0
+      ? this.state.result.hits
+      : [];
+    const updatedHits = [
+      ...oldHits,
+      ...hits
+    ];
+    this.setState({
+      result: { hits: updatedHits, page }
+    });
+  }
 
-  fetchSearchTopStories = (searchKeyWord) =>
-    fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchKeyWord}`)
+  fetchSearchTopStories = (searchKeyWord, page = 0) =>
+    fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchKeyWord}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`)
       .then(response => response.json())
       .then(result => this.setSearchTopStories(result))
       .catch(error => error);
@@ -37,7 +53,7 @@ class App extends Component {
   componentDidMount = () => this.fetchSearchTopStories(this.state.searchTerm);
 
 
-  onSubmitSearch = (event) => {this.fetchSearchTopStories(this.state.searchTerm);event.preventDefault();}
+  onSubmitSearch = (event) => { this.fetchSearchTopStories(this.state.searchTerm); event.preventDefault(); }
 
 
 
@@ -50,7 +66,9 @@ class App extends Component {
 
 
   render() {
+
     const { searchTerm, result } = this.state;
+    const page = (result && result.page) || 0;
     if (!result) return null; // or 'result && '
 
     return (
@@ -68,6 +86,9 @@ class App extends Component {
               dismissItem={this.dismissItem}
             /> : null
         }
+        <Button onClick={() => this.fetchSearchTopStories(searchTerm, page + 1)}>
+          More
+          </Button>
       </div>
     );
   }
