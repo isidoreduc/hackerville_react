@@ -1,13 +1,13 @@
 import React from 'react'
 import Button from './ButtonComponent'
 
-
-const isSearched = searchTerm => item => item.title.toLowerCase().includes(searchTerm.toLowerCase());
+//'item.title &&' is a form of conditional check - same as: if(item.title) or if(item.title===true)
+//const isSearched = searchTerm => item => item.title && item.title.toLowerCase().includes(searchTerm.toLowerCase());
 // destructuring the props parameter
-const List = ({list, pattern, dismissItem}) => 
+const List = ({list, dismissItem}) => 
 
       <div className='container'>
-        {list.filter(isSearched(pattern)).map(item =>
+        {list.map(item =>
           <div className='col' key={item.objectID}>
             <a href={item.url}>{item.title}</a><span> | </span>
             <span>Author: {item.author}</span><span> | </span>

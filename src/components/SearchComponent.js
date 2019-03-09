@@ -1,13 +1,16 @@
 import React from 'react'
 
-const Search = ({ value, onChange, children }) =>
+const Search = ({ value, onChange, onSubmit, children }) =>
     <div className='container'>
-        <form>
+        <form onSubmit={onSubmit}>
             <div className='row'>
-                {children}<input type='text'
+                <input type='text'
                     value={value}
                     onChange={onChange}
                     placeholder='search...' />
+                <button type="submit">
+                    {children}
+                </button>
             </div>
             <br />
         </form>
