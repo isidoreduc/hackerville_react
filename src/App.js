@@ -17,6 +17,8 @@ const PARAM_HPP = 'hitsPerPage=';
 //const url = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${DEFAULT_QUERY}`;
 
 class App extends Component {
+  // keeps track of the lifecycle state of the component
+  _isMounted = false;
 
   constructor(props) {
     super(props);
@@ -58,14 +60,17 @@ class App extends Component {
   fetchSearchTopStories = (searchKeyWord, page = 0) =>
     // same as axios.get()
     axios(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchKeyWord}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`)
-      .then(result => this.setSearchTopStories(result.data))
-      .catch(error => this.setState({ error }));
+      .then(result => this._isMounted & this.setSearchTopStories(result.data))
+      .catch(error => this._isMounted & this.setState({ error }));
 
   componentDidMount = () => {
+    this._isMounted = true;
     const { searchTerm } = this.state;
     this.setState({ searchKey: searchTerm });
     this.fetchSearchTopStories(searchTerm);
   }
+
+  componentWillUnmount = () => this._isMounted = false;
 
   onSubmitSearch = (event) => {
     const { searchTerm } = this.state;
