@@ -20,27 +20,36 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      result: null,
+      results: null,
+      searchKey: '',
       searchTerm: DEFAULT_QUERY,
     };
+
+    this.needsToSearchTopStories = this.needsToSearchTopStories.bind(this);
     this.setSearchTopStories = this.setSearchTopStories.bind(this);
     this.onSearchChange = this.onSearchChange.bind(this);
     this.dismissItem = this.dismissItem.bind(this);
     this.fetchSearchTopStories = this.fetchSearchTopStories.bind(this);
   }
 
+  needsToSearchTopStories = (searchTerm) => !this.state.results[searchTerm];
 
-  setSearchTopStories(result) {
+
+  setSearchTopStories = (result) => {
     const { hits, page } = result;
-    const oldHits = page !== 0
-      ? this.state.result.hits
+    const { searchKey, results } = this.state;
+    const oldHits = results && results[searchKey]
+      ? results[searchKey].hits
       : [];
     const updatedHits = [
       ...oldHits,
       ...hits
     ];
     this.setState({
-      result: { hits: updatedHits, page }
+      results: {
+        ...results,
+        [searchKey]: { hits: updatedHits, page }
+      }
     });
   }
 
@@ -50,26 +59,56 @@ class App extends Component {
       .then(result => this.setSearchTopStories(result))
       .catch(error => error);
 
-  componentDidMount = () => this.fetchSearchTopStories(this.state.searchTerm);
+  componentDidMount = () => {
+    const { searchTerm } = this.state;
+    this.setState({ searchKey: searchTerm });
+    this.fetchSearchTopStories(searchTerm);
+  }
 
-
-  onSubmitSearch = (event) => { this.fetchSearchTopStories(this.state.searchTerm); event.preventDefault(); }
+  onSubmitSearch = (event) => {
+    const { searchTerm } = this.state;
+    this.setState({ searchKey: searchTerm });
+    if (this.needsToSearchTopStories(searchTerm)) {
+      this.fetchSearchTopStories(searchTerm);
+    }
+    event.preventDefault();
+  }
 
 
 
   onSearchChange = (event) => this.setState({ searchTerm: event.target.value });
 
   dismissItem = (id) => {
-    const updatedHits = this.state.result.hits.filter(item => item.objectID !== id);
-    this.setState({ result: { ...this.state.result, hits: updatedHits } }); // spread operator = creates a new object that adds the new property 'hits' to the array of property objects 'result'
+    const { searchKey, results } = this.state;
+    const { hits, page } = results[searchKey];
+    const isNotId = item => item.objectID !== id;
+    const updatedHits = hits.filter(isNotId);
+    this.setState({
+      results: {
+        ...results,
+        [searchKey]: { hits: updatedHits, page }
+      }
+    });
   }
 
 
   render() {
 
-    const { searchTerm, result } = this.state;
-    const page = (result && result.page) || 0;
-    if (!result) return null; // or 'result && '
+    const {
+      searchTerm,
+      results,
+      searchKey
+    } = this.state;
+    const page = (
+      results &&
+      results[searchKey] &&
+      results[searchKey].page
+    ) || 0;
+    const list = (
+      results &&
+      results[searchKey] &&
+      results[searchKey].hits
+    ) || [];
 
     return (
       <div className='container'>
@@ -80,16 +119,18 @@ class App extends Component {
             onSubmit={this.onSubmitSearch}
           >  Search</Search>
         </div>
-        {
-          result ?                                                  // show list only if there's data
-            <List list={result.hits}
-              dismissItem={this.dismissItem}
-            /> : null
-        }
-        <Button onClick={() => this.fetchSearchTopStories(searchTerm, page + 1)}>
-          More
-          </Button>
+        <div className='row'>
+          <List list={list}
+            dismissItem={this.dismissItem}
+          />
+
+          <Button onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}>
+            More
+        </Button>
+        </div>
+        <br />
       </div>
+
     );
   }
 }

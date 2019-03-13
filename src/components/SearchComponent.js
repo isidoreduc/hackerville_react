@@ -8,7 +8,7 @@ const Search = ({ value, onChange, onSubmit, children }) =>
                     value={value}
                     onChange={onChange}
                     placeholder='search...' />
-                <button type="submit">
+                <button type="submit" >
                     {children}
                 </button>
             </div>
