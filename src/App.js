@@ -98,7 +98,7 @@ class App extends Component {
     const {
       searchTerm,
       results,
-      searchKey, 
+      searchKey,
       error
     } = this.state;
     const page = (
@@ -112,7 +112,7 @@ class App extends Component {
       results[searchKey].hits
     ) || [];
 
-    if(error) return <div className='container'><h1>Something went wrong!!!</h1></div>;
+    //if (error) return <div className='container'><h1>Something went wrong!!!</h1></div>;
 
     return (
       <div className='container'>
@@ -123,15 +123,23 @@ class App extends Component {
             onSubmit={this.onSubmitSearch}
           >  Search</Search>
         </div>
-        <div className='row'>
-          <List list={list}
-            dismissItem={this.dismissItem}
-          />
+        {
+          error ?
+            <div className='container'>
+              <h1>Something went wrong!!!</h1>
+            </div>
+            :
+            <div className='row'>
+              <List list={list}
+                dismissItem={this.dismissItem}
+              />
 
-          <Button onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}>
-            More
+              <Button onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}>
+                More
         </Button>
-        </div>
+            </div>
+        }
+
         <br />
       </div>
 
