@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import axios from 'axios';
 import List from './components/ListComponent.js';
 import Search from './components/SearchComponent.js';
 import Button from './components/ButtonComponent.js';
@@ -55,9 +56,8 @@ class App extends Component {
   }
 
   fetchSearchTopStories = (searchKeyWord, page = 0) =>
-    fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchKeyWord}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`)
-      .then(response => response.json())
-      .then(result => this.setSearchTopStories(result))
+    axios(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchKeyWord}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`)
+      .then(result => this.setSearchTopStories(result.data))
       .catch(error => this.setState({ error }));
 
   componentDidMount = () => {
